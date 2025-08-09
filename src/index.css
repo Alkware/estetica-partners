@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+:root {
+  --color-primary-100: #8db0d5;
+  --color-primary-200: #00c8ff;
+  --color-primary-300: #0d96eb;
+  --color-text: #444
+}
+
+@theme {
+  --color-primary: var(--color-primary-200);
+  --color-primary-hover: var(--color-primary-300);
+  --color-primary-active: var(--color-primary-100);
+  --color-text: #444;
+
+  --animate-display: display 200ms ease-out;
+}
+
+@keyframes display {
+  from {
+    transform: scale(.7);
+  } to {
+    transform: scale(1);
+  }
+}
