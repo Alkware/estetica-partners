@@ -10,7 +10,12 @@ export const AffiliateLink: React.FC<AffiliateLinkProps> = ({ partnerId }) => {
   const [copied, setCopied] = useState(false);
   const [showQR, setShowQR] = useState(false);
 
-  const affiliateUrl = window.location.href.includes("wipzee") ? `https://l.wipzee.com/${partnerId}` : "http://localhost:3334/partner_link/" + partnerId;
+  const affiliateUrl =
+    window.location.href.includes("wpz-hom") ?
+      `https://api.wpz-hom.wipzee.com/partner_link/${partnerId}` :
+      window.location.href.includes("wipzee") ?
+        `https://l.wipzee.com/${partnerId}` :
+        "http://localhost:3334/partner_link/" + partnerId;
 
   const copyToClipboard = async () => {
     try {
