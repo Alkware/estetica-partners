@@ -47,8 +47,11 @@ export function FomrCreatePixInfo({ modalId, tagId }: FomrCreatePixInfoProps) {
     }
 
     return (
-        <div className="w-screen max-w-[480px] h-screen md:h-4/5 rounded bg-white p-4">
-            <X onClick={() => clearModal(modalId)} />
+        <div className="w-screen max-w-[480px] h-screen md:h-4/5 rounded bg-white p-4 relative">
+            <X
+                className="absolute top-2 right-2 cursor-pointer"
+                onClick={() => clearModal(modalId)}
+            />
             <FormProvider {...form}>
                 <form
                     onSubmit={form.handleSubmit(handleRegister)}

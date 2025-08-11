@@ -45,8 +45,8 @@ export const Referrals: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-blue-100 rounded-xl">
-              <Users size={24} className="text-blue-600" />
+            <div className="p-3 bg-gray-100 rounded-xl">
+              <Users size={24} className="text-gray-600" />
             </div>
             <div>
               <p className="text-sm text-gray-600">Total de Indicados</p>
@@ -69,12 +69,12 @@ export const Referrals: React.FC = () => {
 
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-gray-100 rounded-xl">
-              <User size={24} className="text-gray-600" />
+            <div className="p-3 bg-blue-100 rounded-xl">
+              <User size={24} className="text-blue-600" />
             </div>
             <div>
-              <p className="text-sm text-gray-600">Gratuitos</p>
-              <p className="text-2xl font-bold text-[#444]">{metricData.totalReferrals - metricData.totalUpgrades}</p>
+              <p className="text-sm text-gray-600">Usuários ativos</p>
+              <p className="text-2xl font-bold text-[#444]">{metricData.activeUsers?.length || 0}</p>
             </div>
           </div>
         </div>
@@ -97,7 +97,7 @@ export const Referrals: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {referrals.map((referral) => (
+              {referrals.sort((a, b)=> newDate(b.created_at).valueOf() - newDate(a.created_at).valueOf()).map((referral) => (
                 <tr key={referral.id} className="border-b border-gray-50 hover:bg-gray-50/50">
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
@@ -115,26 +115,33 @@ export const Referrals: React.FC = () => {
                   </td>
                   <td className="py-4 px-6 text-center">
                     <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${getCurrentActivePlan(referral.plan_management)
-                      ? 'bg-gradient-to-r from-yellow-100 to-orange-100 text-orange-700'
-                      : 'bg-gray-100 text-gray-600'
+                      ? 'bg-gradient-to-r from-yellow-100 to-orange-200 text-orange-700'
+                      : metricData.activeUsers?.some(user => user.id === referral.id) ?
+                        'bg-gradient-to-r from-blue-100 to-blue-300 text-blue-700'
+                        : 'bg-gray-100 text-gray-600'
                       }`}>
                       {getCurrentActivePlan(referral.plan_management) ? (
                         <>
                           <Crown size={12} />
                           Plano Pago
                         </>
-                      ) : (
+                      ) : metricData.activeUsers?.some(user => user.id === referral.id) ?
                         <>
                           <User size={12} />
-                          Gratuito
+                          Usuário ativo
                         </>
-                      )}
+                        :
+                        <>
+                          <User size={12} />
+                          Inativo
+                        </>
+                      }
                     </span>
                   </td>
                   <td className="py-4 px-6 text-right">
-                    <span className={`font-bold ${(getCurrentActivePlan(referral.plan_management)?.partner_comissions?.commission_value || 0) > 0 ? 'text-green-600' : 'text-gray-400'
+                    <span className={`font-bold ${(getCurrentActivePlan(referral.plan_management)?.partner_comissions?.commission_value || 0) > 0 ? 'text-orange-600' : metricData.activeUsers?.some(user => user.id === referral.id) ? "text-blue-600" : 'text-gray-400'
                       }`}>
-                      {maskToMoney(getCurrentActivePlan(referral.plan_management)?.partner_comissions?.commission_value || 0)}
+                      {maskToMoney(getCurrentActivePlan(referral.plan_management) ? getCurrentActivePlan(referral.plan_management)?.partner_comissions?.commission_value : metricData.activeUsers?.some(user => user.id === referral.id) ? 200 : 0)}
                     </span>
                   </td>
                 </tr>

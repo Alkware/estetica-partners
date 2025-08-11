@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuthStore } from '../stores/authStore';
-import { Bell, LogOut, Menu, X } from 'lucide-react';
+import { AlertTriangle, LogOut, Menu, X } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { SearchParamsVariables } from '../variables.global';
 
@@ -17,14 +17,26 @@ export const Header: React.FC = () => {
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 bg-gradient-to-r from-[#00c8ff] to-[#0d96eb] rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold">W</span>
+        <div className="flex gap-2 items-center">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 bg-gradient-to-r from-[#00c8ff] to-[#0d96eb] rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold">W</span>
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-[#444]">Painel de Parceiros</h1>
+              <p className="text-sm text-gray-600">Bem-vindo, {partner?.name}</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-xl font-bold text-[#444]">Painel de Parceiros</h1>
-            <p className="text-sm text-gray-600">Bem-vindo, {partner?.name}</p>
-          </div>
+
+          {!partner?.is_active &&
+            <div className='flex gap-3 items-center bg-orange-100 text-orange-800 px-4 rounded'>
+              <div>
+                <h2 className='font-semibold text-sm'>Aguarde um momento.</h2>
+                <h3 className='text-sm'>Estamos ativando sua conta...</h3>
+              </div>
+              <AlertTriangle />
+            </div>
+          }
         </div>
 
         <div className="flex items-center gap-4">

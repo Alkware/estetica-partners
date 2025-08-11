@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { DollarSign, TrendingUp, Calendar, Download } from 'lucide-react';
+import { DollarSign, TrendingUp, Download, BadgeDollarSign } from 'lucide-react';
 import { Progress } from '../ui/progress';
 import { useAuthStore } from '@/stores/authStore';
 import { useDate } from '@/hooks/useDate';
@@ -88,21 +88,22 @@ export const Commissions: React.FC = () => {
 
       {/* Summary Cards */}
       <div className="w-full flex flex-col-reverse md:flex-row  gap-4">
-        <div className="w-full flex flex-col justify-between items-center bg-white p-6 rounded-2xl shadow-md">
+        <div className="w-full flex flex-col gap-4 items-center bg-white p-6 rounded-2xl shadow-md">
           <div className='w-full my-2'>
             <h2 className="text-xl font-bold text-text text-center sm:text-left">Meta de usuários ativos</h2>
             <h3 className='text-text text-center sm:text-left'>
-              A cada 50 usuários indicado por você, você ganhará um bônus de
-              <span className='text-green-700 font-bold'> R$100 Reais</span>
+              Indique 50 usuários ativos e ganhe
+              <span className='text-green-700 font-bold'> 100 Reais </span>
+              de bônus!
             </h3>
           </div>
 
           <div className="w-full space-y-2">
             <Progress
-              value={(partner?.referrals.filter(user => !getCurrentActivePlan(user.plan_management))?.length || 0) * 2}
+              value={metricData.activeUsers?.length || 0}
               className='w-full px-4 h-6'
             />
-            <span className='mt-1 w-full font-bold text-center sm:text-left text-primary-hover'>{partner?.referrals.filter(user => !getCurrentActivePlan(user.plan_management))?.length} / {partner?.user_fremium || 50}</span>
+            <span className='mt-1 block w-full font-semibold text-center text-primary-hover'>{(metricData.activeUsers?.length || 0)} / 50</span>
           </div>
         </div>
 
@@ -139,12 +140,12 @@ export const Commissions: React.FC = () => {
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center gap-4 mb-4">
             <div className="p-3 bg-blue-100 rounded-xl">
-              <Calendar size={24} className="text-blue-600" />
+              <BadgeDollarSign size={24} className="text-blue-600" />
             </div>
             <div>
-              <p className="text-sm text-gray-600">Saques disponíveis</p>
+              <p className="text-sm text-gray-600">Valor Debitado</p>
               <p className="text-2xl font-bold text-[#444]">
-                {4 - metricData.withdrawalAvailable} de 4
+                {maskToMoney(metricData.totalWithdrawals)}
               </p>
             </div>
           </div>

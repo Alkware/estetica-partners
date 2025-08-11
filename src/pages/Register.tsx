@@ -6,14 +6,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Modal } from '../components/ui/modal/Modal';
 import { useNavigate } from 'react-router-dom';
 import { registerSchema, RegisterTypes } from '@/schemas/register.schema';
-import { useFormatText } from '@/hooks/useFormatText';
+import { useMask } from '@/hooks/useMask';
 
 export const Register: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const { handleSubmit, formState, register } = useForm<RegisterTypes>({ resolver: zodResolver(registerSchema) });
+    const { maskToCellPhone } = useMask();
     const navigate = useNavigate();
-    const { maskToCellPhone } = useFormatText();
+
+
 
     // Função responsável por enviar os dados do usuário para api
     const handleRegister = async (data: Omit<RegisterTypes, "confirm_password"> & { confirm_password?: string }) => {
@@ -30,7 +32,7 @@ export const Register: React.FC = () => {
 
 
         localStorage.setItem('token', response.data!.token);
-        navigate("/pre-approval");
+        navigate("/");
         setIsLoading(false);
     };
 

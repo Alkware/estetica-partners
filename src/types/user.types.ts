@@ -17,6 +17,7 @@ export interface User {
   user_insights?: [{ ask: string, answer: string }]
 
   plan_management: Plan_management[]
+  schedulings: Array<{ created_at: string }>;
 
   updated_at?: string
   created_at: string
