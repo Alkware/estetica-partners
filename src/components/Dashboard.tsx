@@ -40,7 +40,7 @@ export const Dashboard: React.FC = () => {
       className="p-6 space-y-6"
     >
       {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-[#00c8ff] to-[#0d96eb] rounded-2xl p-6 text-white flex justify-between">
+      <div className="bg-gradient-to-r from-[#00c8ff] to-[#0d96eb] rounded-2xl p-6 text-white flex flex-col sm:flex-row justify-between">
         <div className='w-full'>
           <h2 className="text-2xl font-bold mb-2">Olá, {partner?.name}! 👋</h2>
           <p className="text-white mb-4">

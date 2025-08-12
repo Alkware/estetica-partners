@@ -105,7 +105,7 @@ export const AffiliateLink: React.FC<AffiliateLinkProps> = ({ summarized }) => {
               className="text-xs text-gray-500 space-y-1 group-data-[summarized=true]:hidden"
             >
               <p>• Compartilhe este link para ganhar comissões</p>
-              <p>• 30% de comissão em cada upgrade premium</p>
+              <p>• Comissão por cada usuário ativo indicado</p>
               <p>• Pagamento mensal via PIX</p>
             </div>
           </div>

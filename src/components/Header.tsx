@@ -17,7 +17,7 @@ export const Header: React.FC = () => {
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
-        <div className="flex gap-2 items-center">
+        <div className="flex flex-col sm:flex-row gap-2 items-center">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 bg-gradient-to-r from-[#00c8ff] to-[#0d96eb] rounded-lg flex items-center justify-center">
               <span className="text-white font-bold">W</span>
@@ -29,7 +29,7 @@ export const Header: React.FC = () => {
           </div>
 
           {!partner?.is_active &&
-            <div className='flex gap-3 items-center bg-orange-100 text-orange-800 px-4 rounded'>
+            <div className='w-full sm:w-auto flex gap-3 items-center bg-orange-100 text-orange-800 px-4 rounded'>
               <div>
                 <h2 className='font-semibold text-sm'>Aguarde um momento.</h2>
                 <h3 className='text-sm'>Estamos ativando sua conta...</h3>

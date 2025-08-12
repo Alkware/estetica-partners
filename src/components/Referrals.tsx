@@ -86,32 +86,29 @@ export const Referrals: React.FC = () => {
           <h3 className="text-lg font-bold text-[#444]">Lista de Indicados</h3>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="max-h-[300px] overflow-auto">
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
                 <th className="text-left py-3 px-6 text-sm font-medium text-gray-600">Indicado</th>
-                <th className="text-left py-3 px-6 text-sm font-medium text-gray-600">Data de Cadastro</th>
                 <th className="text-center py-3 px-6 text-sm font-medium text-gray-600">Status</th>
+                <th className="text-left py-3 px-6 text-sm font-medium text-gray-600">Data de Cadastro</th>
                 <th className="text-right py-3 px-6 text-sm font-medium text-gray-600">Valor Gerado</th>
               </tr>
             </thead>
             <tbody>
-              {referrals.sort((a, b)=> newDate(b.created_at).valueOf() - newDate(a.created_at).valueOf()).map((referral) => (
+              {referrals.sort((a, b) => newDate(b.created_at).valueOf() - newDate(a.created_at).valueOf()).map((referral) => (
                 <tr key={referral.id} className="border-b border-gray-50 hover:bg-gray-50/50">
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-gradient-to-r from-[#00c8ff] to-[#0d96eb] rounded-full flex items-center justify-center text-white font-medium">
                         {referral.user_name.charAt(0)}
                       </div>
-                      <div>
-                        <p className="font-medium text-[#444]">{referral.user_name}</p>
-                        <p className="text-sm text-gray-500">{referral.email}</p>
+                      <div className='w-32 overflow-hidden'>
+                        <p className="w-full whitespace-nowrap overflow-hidden text-ellipsis font-medium text-[#444]">{referral.user_name}</p>
+                        <p className="w-full whitespace-nowrap overflow-hidden text-ellipsis text-sm text-gray-500">{referral.email}</p>
                       </div>
                     </div>
-                  </td>
-                  <td className="py-4 px-6 text-sm text-gray-600">
-                    {new Date(referral.created_at).toLocaleDateString('pt-BR')}
                   </td>
                   <td className="py-4 px-6 text-center">
                     <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${getCurrentActivePlan(referral.plan_management)
@@ -137,6 +134,9 @@ export const Referrals: React.FC = () => {
                         </>
                       }
                     </span>
+                  </td>
+                  <td className="py-4 px-6 text-sm text-gray-600">
+                    {new Date(referral.created_at).toLocaleDateString('pt-BR')}
                   </td>
                   <td className="py-4 px-6 text-right">
                     <span className={`font-bold ${(getCurrentActivePlan(referral.plan_management)?.partner_comissions?.commission_value || 0) > 0 ? 'text-orange-600' : metricData.activeUsers?.some(user => user.id === referral.id) ? "text-blue-600" : 'text-gray-400'

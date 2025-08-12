@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { LogIn, Eye, EyeOff } from 'lucide-react';
 import { createPartner } from '@/api/partner.api';
 import { useForm } from 'react-hook-form';
@@ -7,8 +7,11 @@ import { Modal } from '../components/ui/modal/Modal';
 import { useNavigate } from 'react-router-dom';
 import { registerSchema, RegisterTypes } from '@/schemas/register.schema';
 import { useMask } from '@/hooks/useMask';
+import { ModalContext } from '@/context/ModalContext';
+import { PopOver } from '@/components/ui/modal/templates/PopOver';
 
 export const Register: React.FC = () => {
+    const { setModalContent } = useContext(ModalContext)
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const { handleSubmit, formState, register } = useForm<RegisterTypes>({ resolver: zodResolver(registerSchema) });
@@ -26,10 +29,16 @@ export const Register: React.FC = () => {
 
         if (!response?.success) {
             setIsLoading(false);
-            alert("dont create")
+            setModalContent({
+                id: "error-create-partner",
+                component: <PopOver 
+                    id="error-create-partner"
+                    message={response.message}
+                    type='WARNING'
+                />
+            });
             return;
         }
-
 
         localStorage.setItem('token', response.data!.token);
         navigate("/");
