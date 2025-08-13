@@ -3,7 +3,7 @@ import { PopOver } from "@/components/ui/modal/templates/PopOver";
 import { ModalContext } from "@/context/ModalContext";
 import { useMask } from "@/hooks/useMask";
 import { useAuthStore } from "@/stores/authStore";
-import { Commission } from "@/types/comission.types";
+import { Commission } from "@/types/commission.types";
 import { Download, X } from "lucide-react";
 import { useContext, useState } from "react";
 
@@ -27,9 +27,22 @@ export function ModalRequestCommission({ partnerId, commissionsAvailable, modalI
 
 
     async function handleRequestWithdrawal() {
+        if(!commissionSelected.length){
+            setModalContent({
+                id: "error-not-commission-selected",
+                component: <PopOver
+                    id="error-not-commission-selected"
+                    message={"Selecione pelo menos uma comissão para saque"}
+                    type="WARNING"
+                />
+            });
+            return;
+        }
+
         const response = await createWithdrawn({
+            withdrawn_type: [...new Set(commissionSelected.map(com => com.commission_name.toLowerCase().includes("bônus") ? "Bônus de indicação" : "Comissão de assinatura"))].join(", "),
             partner_id: partnerId,
-            partner_comissions_id: commissionSelected.map(commission => commission.id)
+            partner_comissions_id: commissionSelected.map(commission => commission.id),
         });
 
         if (!response.success) {
@@ -58,7 +71,7 @@ export function ModalRequestCommission({ partnerId, commissionsAvailable, modalI
     }
 
     return (
-        <div className="w-screen h-screen md:h-3/4 max-w-[480px] bg-white flex flex-col items-center gap-6 p-4">
+        <div className="w-screen h-screen md:h-[75vh] max-w-[480px] bg-white flex flex-col items-center gap-6 p-4">
 
             <div className="w-full flex items-center justify-between px-1">
                 <h2 className="text-2xl text-text">Solicitação de Saque</h2>
@@ -82,7 +95,7 @@ export function ModalRequestCommission({ partnerId, commissionsAvailable, modalI
                             className="size-4 rounded-full bg-transparent data-[isselected=true]:bg-primary border border-primary-hover"
                         ></span>
 
-                        <h2>{commission.plan_management.user.user_name}</h2>
+                        <h2>{commission.commission_name || commission.plan_management?.user?.user_name || "Desconhecido" }</h2>
 
                         <h3>{maskToMoney(commission.commission_value)}</h3>
                     </div>
@@ -90,11 +103,15 @@ export function ModalRequestCommission({ partnerId, commissionsAvailable, modalI
             </div>
 
 
-            <div className="w-full p-2 py-4 flex flex-col items-center shadow-[2px_2px_10px_1px_#0002] rounded">
-                <h2>Valor do saque:</h2>
+            <div className="w-full p-2 py-4 my-4 flex flex-col items-center border-t border-[#4444] rounded">
+                <h2 className="font-medium text-xl">Valor do saque:</h2>
+                <span
+                    data-display={commissionSelected.some(commission => !!commission.plan_management)}
+                    className="my-2 text-[#444] data-[display=false]:hidden"
+                >Taxa pix de <span className="line-through">R$3,99</span> por 0,99</span>
                 <span
                     className="text-4xl text-primary font-bold"
-                >{maskToMoney(commissionSelected.reduce((total, commission) => commission.commission_value + total, 0))}</span>
+                >{maskToMoney(commissionSelected.reduce((total, commission) => (commission.commission_value - (commission?.plan_management ? 99 : 0)) + total, 0))}</span>
                 <button
                     className="cursor-pointer mt-12 bg-gradient-to-r whitespace-nowrap from-[#00c8ff] to-[#0d96eb] text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-200 flex items-center gap-2"
                     onClick={handleRequestWithdrawal}
@@ -102,6 +119,7 @@ export function ModalRequestCommission({ partnerId, commissionsAvailable, modalI
                     <Download size={20} />
                     Solicitar Saque
                 </button>
+                <span className="italic my-4 text-center w-full text-[#444]">*Saques disponíveis somente em dias úteis.</span>
             </div>
         </div>
     );

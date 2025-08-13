@@ -2,12 +2,14 @@ import React from 'react';
 import { Crown, User as UserIcon } from 'lucide-react';
 import { User } from '../types/user.types';
 import { usePlanManagement } from '@/hooks/usePlanManagement';
+import { useMask } from '@/hooks/useMask';
 
 interface RecentReferralsProps {
   referrals: User[];
 }
 
 export const RecentReferrals: React.FC<RecentReferralsProps> = ({ referrals }) => {
+  const { maskToMoney } = useMask();
   const { getCurrentActivePlan } = usePlanManagement();
 
   return (
@@ -60,9 +62,8 @@ export const RecentReferrals: React.FC<RecentReferralsProps> = ({ referrals }) =
                   </span>
                 </td>
                 <td className="py-4 px-2 text-right">
-                  <span className={`font-medium whitespace-nowrap ${(getCurrentActivePlan(referral.plan_management)?.plan.plan_value || 0) > 0 ? 'text-green-600' : 'text-gray-400'
-                    }`}>
-                    R$ {((getCurrentActivePlan(referral.plan_management)?.partner_comissions?.commission_value || 0) / 100).toFixed(2)}
+                  <span className={`font-medium whitespace-nowrap ${(getCurrentActivePlan(referral.plan_management)?.plan.plan_value || 0) > 0 ? 'text-green-600' : 'text-gray-400'}`}>
+                    {maskToMoney(referral.plan_management?.reduce((acc, plan) => acc + (plan?.partner_comissions?.commission_value || 0), 0) || 0)}
                   </span>
                 </td>
                 <td className="py-4 px-2 text-sm text-gray-600">

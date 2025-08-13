@@ -29,29 +29,29 @@ export const Commissions: React.FC = () => {
 
   const handleRequestWithdrawals = () => {
     if (!partner) return;
+    let error: { id: string | null, message: string } = { id: null, message: "" };
+
     const existComissionToReceive = partner?.comissions.filter(comission => comission.available) || [];
     const unpaidAmount = existComissionToReceive.filter(comission => !partner?.withdrawals.find(withdrawn => withdrawn.partner_comissions_id.includes(comission.id)));
 
+    // ERRO CASO O PARCEIRO NÃO TENHA COMISSÕES DISPONÍVEIS
     if (!unpaidAmount?.length) {
-      setModalContent({
-        id: "dont-exit-comissions",
-        component: <PopOver
-          id='dont-exit-comissions'
-          message='Vocẽ não tem nenhuma comissão disponível para receber'
-          type='WARNING'
-        />
-      });
-      return;
+      error.id = "dont-exit-comissions";
+      error.message = 'Vocẽ não tem nenhuma comissão disponível para receber'
+    } else if (partner?.withdrawals.some(withdrawn => !withdrawn.status)) {   // ERRO CASO JÁ EXISTA UMA SOLICITAÇÃO DE SAQUE
+      error.id = "exist-withdrawn-pending";
+      error.message = 'Já existe uma solicitação de saque pendente, espere a conclusão e tente novamente.'
+    } else if (!partner.pix_info.length) { // ERRO CASO O PARCEIRO AINDA NÃO TENHA UMA CHAVE PIX CADASTRADA.
+      error.id = "dont-exit-pix";
+      error.message = 'Não é possível solicitar saque sem cadastrar sua chave pix.'
     }
 
-    const existWithdrawnPending = partner?.withdrawals.some(withdrawn => !withdrawn.status)
-
-    if (existWithdrawnPending) {
+    if (error.id) {
       setModalContent({
-        id: "existWithdrawnPending",
+        id: error.id,
         component: <PopOver
-          id='existWithdrawnPending'
-          message='Você já tem uma solicitação de saque pendente, espere a confirmação para sacar novamente!'
+          id={error.id}
+          message={error.message}
           type='WARNING'
         />
       });
@@ -88,23 +88,39 @@ export const Commissions: React.FC = () => {
 
       {/* Summary Cards */}
       <div className="w-full flex flex-col-reverse md:flex-row  gap-4">
-        <div className="w-full flex flex-col gap-4 items-center bg-white p-6 rounded-2xl shadow-md">
-          <div className='w-full my-2'>
-            <h2 className="text-xl font-bold text-text text-center sm:text-left">Meta de usuários ativos</h2>
-            <h3 className='text-text text-center sm:text-left'>
-              Indique 50 usuários ativos e ganhe
-              <span className='text-green-700 font-bold'> 100 Reais </span>
-              de bônus!
-            </h3>
-          </div>
 
-          <div className="w-full space-y-2">
-            <Progress
-              value={metricData.activeUsers?.length || 0}
-              className='w-full px-4 h-6'
-            />
-            <span className='mt-1 block w-full font-semibold text-center text-primary-hover'>{(metricData.activeUsers?.length || 0)} / 50</span>
-          </div>
+
+        <div className="w-full flex flex-col gap-4 items-center bg-white p-6 rounded-2xl shadow-md">
+          {partner?.comissions.some(commission => commission.commission_name.toLowerCase().includes("bônus")) ?
+            // Card de meta atingida
+            <div className="text-center w-full">
+              <h2 className="text-xl font-bold text-green-700">🎉 Meta atingida!</h2>
+              <p className="text-text mt-2">
+                Parabéns! Você indicou <span className="font-bold">50</span> usuários ativos e ganhou
+                <span className="text-green-700 font-bold"> R$ 100 </span>
+                de bônus!
+              </p>
+            </div>
+            :
+            <>
+              <div className='w-full my-2'>
+                <h2 className="text-xl font-bold text-text text-center sm:text-left">Meta de usuários ativos</h2>
+                <h3 className='text-text text-center sm:text-left'>
+                  Indique 50 usuários ativos e ganhe
+                  <span className='text-green-700 font-bold'> 100 Reais </span>
+                  de bônus!
+                </h3>
+              </div>
+
+              <div className="w-full space-y-2">
+                <Progress
+                  value={metricData.activeUsers?.length || 0}
+                  className='w-full px-4 h-6'
+                />
+                <span className='mt-1 block w-full font-semibold text-center text-primary-hover'>{(metricData.activeUsers?.length || 0)} / 50</span>
+              </div>
+            </>
+          }
         </div>
 
         <div className="w-full">
@@ -162,6 +178,7 @@ export const Commissions: React.FC = () => {
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
+                <th className="text-left py-3 px-6 text-sm font-medium text-gray-600">Tipo de Saque</th>
                 <th className="text-left py-3 px-6 text-sm font-medium text-gray-600">Data</th>
                 <th className="text-left py-3 px-6 text-sm font-medium text-gray-600">Valor</th>
                 <th className="text-center py-3 px-6 text-sm font-medium text-gray-600">Status</th>
@@ -176,6 +193,9 @@ export const Commissions: React.FC = () => {
                   className="border-b border-gray-50 hover:bg-gray-50/50 data-[ispaid=true]:cursor-pointer"
 
                 >
+                  <td className="w-20 whitespace-nowrap py-4 px-6 text-sm text-gray-600">
+                      {withdrawal.withdrawn_type}
+                  </td>
                   <td className="py-4 px-6 text-sm text-gray-600">
                     {newDate(withdrawal.created_at).format('DD/MM/YYYY')}
                   </td>
@@ -183,7 +203,7 @@ export const Commissions: React.FC = () => {
                     <p className="font-medium text-[#444]">
                       {maskToMoney(partner.comissions.reduce((total, commission) =>
                         total + (withdrawal.partner_comissions_id.includes(commission.id) ? commission.commission_value : 0),
-                        0) || 0)}
+                        0) - 99 || 0)}
                     </p>
                   </td>
                   <td className="py-4 px-6 text-center">

@@ -1,5 +1,5 @@
 import { PixInfoType } from "@/schemas/pixInfo.schema"
-import { Commission } from "./comission.types"
+import { Commission } from "./commission.types"
 import { User } from "./user.types"
 import { Withdrawal } from "./withdrawals.types"
 

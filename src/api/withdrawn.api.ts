@@ -2,7 +2,7 @@ import { api } from "@/lib/axios";
 import { Withdrawal } from "@/types/withdrawals.types";
 import { isAxiosError } from "axios";
 
-export async function createWithdrawn(data: Pick<Withdrawal, "partner_id" | "partner_comissions_id">) {
+export async function createWithdrawn(data: Pick<Withdrawal, "partner_id" | "partner_comissions_id" | "withdrawn_type">) {
 
     const response = await api.post("/withdrawn/create", data).catch(err => {
         console.error(err)

@@ -1,4 +1,4 @@
-import { Commission } from "./comission.types"
+import { Commission } from "./commission.types"
 import { plan } from "./plan.types"
 import { User } from "./user.types"
 
