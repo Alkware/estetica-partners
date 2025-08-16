@@ -45,15 +45,15 @@ export const useMetricStore = create<MetricState>((set) => ({
         const totalCommissions = partner?.comissions.reduce((acc, comission) => acc + comission.commission_value, 0) || 0;
         const comissionAvailable = partner?.comissions.reduce((acc, comission) => acc + ((comission.available && !isCommissionPaid(comission.id, partner.withdrawals)) ? comission.commission_value : 0), 0) || 0;
         const totalReferrals = partner.referrals.length;
-        const totalUpgrades = partner.referrals.filter(user => getCurrentActivePlan(user.plan_management)).length;
+        const totalUpgrades = partner.referrals.filter(user => getCurrentActivePlan(user.plan_management) && (getCurrentActivePlan(user.plan_management)?.plan?.plan_value || 0) > 0).length;
         const availableCommissions = partner.comissions.reduce((acc, comission) => acc + (comission.available ? comission.commission_value : 0), 0);
         const totalWithdrawals = partner.withdrawals.reduce((acc, withdrawn) => acc + (!withdrawn.status ? 0 : partner.comissions.filter(commission => withdrawn.partner_comissions_id.includes(commission.id)).reduce((acc, com) => acc + com.commission_value, 0)), 0);
         const partnerClicks = partner?.click_link.length || 0;
         const growthReferrals = (partner?.referrals.filter(user => newDate().isSame(user.created_at, "month")).length * 100) / partner?.referrals.length || 0
-        const growthUpdates = (partner.referrals.filter(user => getCurrentActivePlan(user.plan_management) && newDate().isSame(user.created_at, "month")).length * 100) / partner.referrals.filter(user => getCurrentActivePlan(user.plan_management)).length || 0
+        const growthUpdates = (partner.referrals.filter(user => getCurrentActivePlan(user.plan_management) && (getCurrentActivePlan(user.plan_management)?.plan?.plan_value || 0) > 0 && newDate().isSame(user.created_at, "month")).length * 100) / partner.referrals.filter(user => getCurrentActivePlan(user.plan_management)).length || 0
         const conversionRate = Math.floor((totalUpgrades * 100) / totalReferrals) || 0;
         const activeUsers = partner.referrals.filter(user =>
-            !getCurrentActivePlan(user.plan_management) &&
+            (!getCurrentActivePlan(user.plan_management) || (getCurrentActivePlan(user.plan_management)?.plan?.plan_value || 0) <= 0) &&
             newDate(user.created_at).isSameOrBefore(newDate().subtract(7, "day")) &&
             user.schedulings.length &&
             newDate(user.schedulings.sort((a, b) => newDate(b.created_at).valueOf() - newDate(a.created_at).valueOf() )[0].created_at).isSameOrAfter(newDate().subtract(7, "day"))
