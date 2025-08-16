@@ -5,6 +5,8 @@ export interface Commission {
     id: string
     user_id: string
     partner_id: string
+
+    commission_name: string
     commission_value: number
     comission_role: string
     available: boolean

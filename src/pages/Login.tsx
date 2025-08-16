@@ -18,7 +18,7 @@ export const Login: React.FC = () => {
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
-      navigate("/pre-approval")
+      navigate("/")
     }
   }, []);
 
@@ -46,7 +46,7 @@ export const Login: React.FC = () => {
     }
 
     localStorage.setItem('token', response.data);
-    navigate("/pre-approval")
+    navigate("/")
     setIsLoading(false);
   };
 

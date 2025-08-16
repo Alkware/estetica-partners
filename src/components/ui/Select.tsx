@@ -24,7 +24,6 @@ export function SelectModal({ formName, options, selected, onSelect, title, sear
 
     function handleSelectOption(option: string) {
         const selectedOption = options.find(opt => opt.label === option || opt.value === option);
-        console.log(selectedOption)
         if (!selectedOption) return;
 
         form.unregister(formName);

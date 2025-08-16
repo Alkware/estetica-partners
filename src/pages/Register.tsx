@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { LogIn, Eye, EyeOff } from 'lucide-react';
 import { createPartner } from '@/api/partner.api';
 import { useForm } from 'react-hook-form';
@@ -6,14 +6,19 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Modal } from '../components/ui/modal/Modal';
 import { useNavigate } from 'react-router-dom';
 import { registerSchema, RegisterTypes } from '@/schemas/register.schema';
-import { useFormatText } from '@/hooks/useFormatText';
+import { useMask } from '@/hooks/useMask';
+import { ModalContext } from '@/context/ModalContext';
+import { PopOver } from '@/components/ui/modal/templates/PopOver';
 
 export const Register: React.FC = () => {
+    const { setModalContent } = useContext(ModalContext)
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const { handleSubmit, formState, register } = useForm<RegisterTypes>({ resolver: zodResolver(registerSchema) });
+    const { maskToCellPhone } = useMask();
     const navigate = useNavigate();
-    const { maskToCellPhone } = useFormatText();
+
+
 
     // Função responsável por enviar os dados do usuário para api
     const handleRegister = async (data: Omit<RegisterTypes, "confirm_password"> & { confirm_password?: string }) => {
@@ -24,13 +29,19 @@ export const Register: React.FC = () => {
 
         if (!response?.success) {
             setIsLoading(false);
-            alert("dont create")
+            setModalContent({
+                id: "error-create-partner",
+                component: <PopOver 
+                    id="error-create-partner"
+                    message={response.message}
+                    type='WARNING'
+                />
+            });
             return;
         }
 
-
         localStorage.setItem('token', response.data!.token);
-        navigate("/pre-approval");
+        navigate("/");
         setIsLoading(false);
     };
 

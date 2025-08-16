@@ -2,13 +2,16 @@ import React from 'react';
 import { Crown, User as UserIcon } from 'lucide-react';
 import { User } from '../types/user.types';
 import { usePlanManagement } from '@/hooks/usePlanManagement';
+import { useMask } from '@/hooks/useMask';
 
 interface RecentReferralsProps {
   referrals: User[];
 }
 
 export const RecentReferrals: React.FC<RecentReferralsProps> = ({ referrals }) => {
+  const { maskToMoney } = useMask();
   const { getCurrentActivePlan } = usePlanManagement();
+
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
       <div className="flex items-center justify-between mb-6">
@@ -21,9 +24,9 @@ export const RecentReferrals: React.FC<RecentReferralsProps> = ({ referrals }) =
           <thead>
             <tr className="border-b border-gray-100">
               <th className="text-left py-3 px-2 text-sm font-medium text-gray-600">Nome</th>
-              <th className="text-left py-3 px-2 text-sm font-medium text-gray-600">Data</th>
               <th className="text-center py-3 px-2 text-sm font-medium text-gray-600">Status</th>
-              <th className="text-right py-3 px-2 text-sm font-medium text-gray-600">Valor</th>
+              <th className="text-center py-3 px-2 text-sm font-medium text-gray-600">Valor</th>
+              <th className="text-right py-3 px-2 text-sm font-medium text-gray-600">Data</th>
             </tr>
           </thead>
           <tbody>
@@ -40,15 +43,11 @@ export const RecentReferrals: React.FC<RecentReferralsProps> = ({ referrals }) =
                     </div>
                   </div>
                 </td>
-                <td className="py-4 px-2 text-sm text-gray-600">
-                  {new Date(referral.created_at).toLocaleDateString('pt-BR')}
-                </td>
                 <td className="py-4 px-2 text-center">
-                  <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
-                    getCurrentActivePlan(referral.plan_management)?.plan.plan_name.toLowerCase().includes("pro")
-                      ? 'bg-gradient-to-r from-yellow-100 to-orange-100 text-orange-700'
-                      : 'bg-gray-100 text-gray-600'
-                  }`}>
+                  <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${getCurrentActivePlan(referral.plan_management)?.plan.plan_name.toLowerCase().includes("pro")
+                    ? 'bg-gradient-to-r from-yellow-100 to-orange-100 text-orange-700'
+                    : 'bg-gray-100 text-gray-600'
+                    }`}>
                     {getCurrentActivePlan(referral.plan_management)?.plan.plan_name.toLowerCase().includes("pro") ? (
                       <>
                         <Crown size={12} />
@@ -63,11 +62,12 @@ export const RecentReferrals: React.FC<RecentReferralsProps> = ({ referrals }) =
                   </span>
                 </td>
                 <td className="py-4 px-2 text-right">
-                  <span className={`font-medium whitespace-nowrap ${
-                    (getCurrentActivePlan(referral.plan_management)?.plan.plan_value || 0) > 0 ? 'text-green-600' : 'text-gray-400'
-                  }`}>
-                    R$ {((getCurrentActivePlan(referral.plan_management)?.partner_comissions?.commission_value || 0) / 100).toFixed(2)}
+                  <span className={`font-medium whitespace-nowrap ${(getCurrentActivePlan(referral.plan_management)?.plan.plan_value || 0) > 0 ? 'text-green-600' : 'text-gray-400'}`}>
+                    {maskToMoney(referral.plan_management?.reduce((acc, plan) => acc + (plan?.partner_comissions?.commission_value || 0), 0) || 0)}
                   </span>
+                </td>
+                <td className="py-4 px-2 text-sm text-gray-600">
+                  {new Date(referral.created_at).toLocaleDateString('pt-BR')}
                 </td>
               </tr>
             ))}
