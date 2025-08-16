@@ -1,7 +1,6 @@
 import { Commissions } from "@/components/Commissions/Commissions";
 import { Dashboard } from "@/components/Dashboard";
 import { Header } from "@/components/Header";
-import { Materials } from "@/components/Materials";
 import { Referrals } from "@/components/Referrals";
 import { Sidebar } from "@/components/Sidebar";
 import { useAuthStore } from "@/stores/authStore";
@@ -41,8 +40,8 @@ export function Panel({ }: PanelProps) {
                 return <Commissions />;
             case 'referrals':
                 return <Referrals />;
-            case 'materials':
-                return <Materials />;
+            // case 'materials':
+            //     return <Materials />;
             case 'support':
                 return (
                     <div className="p-6">
@@ -50,8 +49,8 @@ export function Panel({ }: PanelProps) {
                         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                             <p className="text-gray-600 mb-4">Entre em contato conosco:</p>
                             <div className="space-y-2">
-                                <p className="text-sm"><strong>Email:</strong> suporte@wipzee.com.br</p>
-                                <p className="text-sm"><strong>WhatsApp:</strong> (11) 99999-9999</p>
+                                <p className="text-sm"><strong>Email:</strong> wipzeebusiness@gmail.com</p>
+                                <p className="text-sm"><strong>WhatsApp:</strong> (35) 991368790</p>
                                 <p className="text-sm"><strong>Horário:</strong> Segunda a Sexta, 9h às 18h</p>
                             </div>
                         </div>

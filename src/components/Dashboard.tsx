@@ -62,7 +62,7 @@ export const Dashboard: React.FC = () => {
           color="blue"
         />
         <MetricCard
-          title="Upgrades Premium"
+          title="Assinantes"
           value={metricData.totalUpgrades}
           icon={Crown}
           trend={{
