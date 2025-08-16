@@ -17,7 +17,7 @@ export const AffiliateLink: React.FC<AffiliateLinkProps> = ({ summarized }) => {
     VITE_URL?.includes("wpz-hom") ?
       `https://api.wpz-hom.wipzee.com/partner_link/${partner.tag_id}` :
       VITE_URL?.includes("wipzee") ?
-        `https://link.wipzee.com/${partner.id}` :
+        `https://link.wipzee.com/${partner.tag_id}` :
         "http://localhost:3334/partner_link/" + partner.tag_id : "Falha ao tentar carregar o link";
 
   const copyToClipboard = async () => {
