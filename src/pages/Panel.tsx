@@ -26,7 +26,7 @@ export function Panel({ }: PanelProps) {
             const isAuthenticate = await auth.authenticate();
             if (!isAuthenticate) {
                 localStorage.removeItem("token")
-                navigate("/login")
+                navigate("/login");
             }
         })();
     }, [])

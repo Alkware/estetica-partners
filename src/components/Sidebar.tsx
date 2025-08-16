@@ -3,7 +3,7 @@ import {
   BarChart3,
   DollarSign,
   Users,
-  FileImage,
+  // FileImage,
   HelpCircle,
   Settings,
   ChevronRight,
@@ -22,7 +22,7 @@ const menuItems = [
   { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
   { id: 'commissions', label: 'Minhas Comissões', icon: DollarSign },
   { id: 'referrals', label: 'Indicados', icon: Users },
-  { id: 'materials', label: 'Materiais de Divulgação', icon: FileImage },
+  // { id: 'materials', label: 'Materiais de Divulgação', icon: FileImage },
   { id: 'support', label: 'Suporte', icon: HelpCircle },
   { id: 'settings', label: 'Configurações', icon: Settings }
 ];
